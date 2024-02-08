@@ -2,3 +2,35 @@
 <html lang="en">
 
 <h1>Options</h1>
+
+<div>
+    <label for="access_token">Access Token:</label>
+    <input type="text" id="access_token" name="access_token" required>
+</div>
+
+<div>
+    <label for="branch">Branch:</label>
+    <input type="text" id="branch" name="branch" required>
+</div>
+
+<div>
+    <label for="file_name">File Name:</label>
+    <input type="text" id="file_name" name="file_name" required>
+</div>
+
+<button id="saveButton">Save</button>
+
+<p id="status"></p>
+
+<style>
+div {
+    display: block;
+    margin: 1% 0;
+}
+
+label, p {
+    font-size: 1.5em;
+}
+</style>
+
+<script src="options.js"></script>

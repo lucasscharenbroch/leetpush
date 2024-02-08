@@ -1,7 +1,7 @@
-import App from './App.svelte';
+import Popup from './Popup.svelte';
 import { hello_github } from "./github";
 
-const app = new App({
+const app = new Popup({
     target: document.body,
     props: {
         name: 'world',
