@@ -1,5 +1,8 @@
 /node_modules/
 /public/build/
 
+*.env
+*.swp
+
 .DS_Store
 .vscode/
