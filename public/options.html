@@ -9,14 +9,30 @@
 </div>
 
 <div>
+    <label for="owner">Owner (github username):</label>
+    <input type="text" id="owner" name="owner" required>
+</div>
+
+<div>
+    <label for="repo">Repository:</label>
+    <input type="text" id="repo" name="repo" required>
+</div>
+
+<div>
     <label for="branch">Branch:</label>
     <input type="text" id="branch" name="branch" required>
 </div>
 
 <div>
-    <label for="file_name">File Name:</label>
-    <input type="text" id="file_name" name="file_name" required>
+    <label for="file_name_pat">File Name Pattern:</label>
+    <input type="text" id="file_name_pat" name="file_name_pat" required>
 </div>
+
+<div>
+    <label for="commit_pat">Commit Message Pattern:</label>
+    <input type="text" id="commit_pat" name="commit_pat" required>
+</div>
+
 
 <button id="saveButton">Save</button>
 
