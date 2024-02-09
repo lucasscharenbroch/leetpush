@@ -1,18 +1,15 @@
 import { Octokit } from "octokit";
 import { get_options } from "./storage";
 
-async function mk_octokit(opts): Promise<Octokit> {
-  let tok = opts.access_token;
-  console.log("tok", tok)
+async function mk_octokit(tok: string): Promise<Octokit> {
   return new Octokit({
     auth: tok
   });
 }
 
-
 export async function make_commit(file_name: string, contents: string, commit_message: string): Promise<string> {
   let opts = await get_options();
-  let octokit = await mk_octokit(opts);
+  let octokit = await mk_octokit(opts.access_token);
 
   const boilerplate = {
     owner: opts.owner,
