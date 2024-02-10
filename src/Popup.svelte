@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let name: string;
-	export let f: function(): Promise<string>;
+	export let f: () => Promise<string>;
 
 	let p_contents: string = "";
 

@@ -9,4 +9,14 @@ const app = new Popup({
     }
 });
 
+chrome.action.onClicked.addListener(async (tab) => {
+    let f = () => {
+        console.log("hi");
+        window.requestAnimationFrame(f);
+    }
+
+    f();
+    // document.querySelector(".btn__r7r7").click();
+});
+
 export default app;

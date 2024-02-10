@@ -1,4 +1,4 @@
-let optNames = ["access_token", "owner", "repo", "branch", "file_name_pat", "commit_pat"];
+import { optNames } from './options';
 
 export async function get_options(): Promise<{access_token: any,
                                               owner: any,
