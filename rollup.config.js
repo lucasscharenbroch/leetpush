@@ -86,7 +86,7 @@ function mk_export_boilerplate(file) {
 	}
 }
 
-let files = ["main", "background", "options"];
+let files = ["main", "options"];
 
 let to_export = [];
 

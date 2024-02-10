@@ -9,14 +9,18 @@ const app = new Popup({
     }
 });
 
-chrome.action.onClicked.addListener(async (tab) => {
-    let f = () => {
-        console.log("hi");
-        window.requestAnimationFrame(f);
-    }
+async function getCurrentTab(): Promise<chrome.tabs.Tab> {
+    let queryOptions = { active: true, lastFocusedWindow: true };
+    // `tab` will either be a `tabs.Tab` instance or `undefined`.
+    let [tab] = await chrome.tabs.query(queryOptions);
+    return tab;
+}
 
-    f();
-    // document.querySelector(".btn__r7r7").click();
-});
+
+getCurrentTab().then(t =>
+    chrome.scripting.executeScript({
+            target: {tabId: t.id},
+            func: () => console.log("hi from extension"),
+    }));
 
 export default app;
