@@ -1,4 +1,4 @@
-export let optNames = ["access_token", "owner", "repo", "branch", "file_name_pat", "commit_pat"];
+import { optNames } from './option-names'
 
 function save() {
     let saveObj = {};
@@ -13,8 +13,6 @@ function save() {
 
 async function populate() {
     let optVals = await chrome.storage.sync.get(optNames);
-    console.log("abc", optVals);
-    console.log(optVals.length);
     for(const opt of optNames) {
         if(optVals[opt]) {
             (document.getElementById(opt) as HTMLInputElement).value = optVals[opt];
@@ -24,3 +22,5 @@ async function populate() {
 
 document.getElementById("saveButton").onclick = save;
 populate();
+
+export {};

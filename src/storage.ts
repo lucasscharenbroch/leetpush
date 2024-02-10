@@ -1,4 +1,4 @@
-import { optNames } from './options';
+import { optNames } from './option-names';
 
 export async function get_options(): Promise<{access_token: any,
                                               owner: any,
