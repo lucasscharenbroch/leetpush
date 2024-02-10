@@ -7,6 +7,33 @@ async function mk_octokit(tok: string): Promise<Octokit> {
   });
 }
 
+export async function file_exists(file_name: string): Promise<boolean> {
+  let opts = await get_options();
+  let octokit = await mk_octokit(opts.access_token);
+
+  const boilerplate = {
+    owner: opts.owner,
+    repo: opts.repo,
+    branch: opts.branch,
+    ref: opts.branch,
+    headers: {
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
+  };
+
+  try {
+    let res = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', { ...boilerplate, path: file_name });
+  } catch(err) {
+    if(err.status == 404) {
+      return false;
+    } else {
+      throw err;
+    }
+  }
+
+  return true;
+}
+
 export async function make_commit(file_name: string, contents: string, commit_message: string): Promise<string> {
   let opts = await get_options();
   let octokit = await mk_octokit(opts.access_token);
@@ -58,5 +85,6 @@ export async function make_commit(file_name: string, contents: string, commit_me
 }
 
 export async function hello_github(): Promise<string> {
-  return make_commit("test_file2", "contents of\nfile 2", "commit message for file 2");
+  // return make_commit("test_file2", "contents of\nfile 2", "commit message for file 2");
+  return String(file_exists("test_file2"));
 }
