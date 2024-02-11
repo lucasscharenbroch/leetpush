@@ -3,6 +3,7 @@
     import { active_tab_is_leetcode, get_leetcode_problem_info } from "./leetcode";
     import { file_exists as github_file_exists, make_commit as make_github_commit } from './github';
     import { get_options } from './storage';
+	import { lang_to_extension } from './lang_extensions';
 
 	let is_leetcode = false;
 
@@ -23,17 +24,46 @@
 		}
 	}
 
-	try_scrape()
+	try_scrape();
 
 	let owner, repo, branch, file_name_pat, commit_pat;
 	let file_name, file_url, commit_message;
 
+	let code, nlines;
+
 	get_options().then(x => {
 		({ owner, repo, branch, file_name_pat, commit_pat } = x);
-		file_name = "test_file0.txt";
 		file_url = `https://github.com/${owner}/${repo}/blob/${branch}/${file_name}`;
-		commit_message = "commit message";
-	});
+	}).then(() =>
+		get_leetcode_problem_info().then(x => {
+			let full_title = x.title;
+			let lang = x.lang;
+			code = x.code;
+			nlines = code.split("\n").length;
+
+			// possible variables to be used in formatting patterns
+			let ext = lang_to_extension(lang);
+			let [, number, Title] = full_title.match(/^([0-9]*)\. (.*)/);
+			let number_padded = number.padStart(4, "0");
+			let Title_ = Title.replace(/ /g, "_");
+			let Title_dash = Title.replace(/ /g, "-");
+			let title_ = Title_.toLowerCase();
+			let title_dash = Title_dash.toLowerCase();
+			let specs = { ext, number, number_padded, Title, Title_, Title_dash, title_, title_dash };
+
+			function spec_lookup(_, x) {
+				return specs[x];
+			}
+
+			let spec_pat = /{([^}]*)}/g;
+
+			file_name = file_name_pat.replace(spec_pat, spec_lookup);
+
+			specs = { ...specs, file_name };
+
+			commit_message = commit_pat.replace(spec_pat, spec_lookup);
+		})
+	);
 
 	let file_exists = writable(false);
 
@@ -48,13 +78,6 @@
 	}
 
 	$: update_file_existence(file_name);
-
-	let title, lang, code;
-	let nlines;
-	get_leetcode_problem_info().then(x => {
-		({ title, lang, code } = x);
-		nlines = code.split("\n").length;
-	});
 
 	let commit_url = writable(undefined);
 
