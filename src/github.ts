@@ -83,8 +83,3 @@ export async function make_commit(file_name: string, contents: string, commit_me
 
   return new_commit.data.sha;
 }
-
-export async function hello_github(): Promise<string> {
-  // return make_commit("test_file2", "contents of\nfile 2", "commit message for file 2");
-  return String(file_exists("test_file2"));
-}

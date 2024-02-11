@@ -1,7 +1,8 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
     import { active_tab_is_leetcode, get_leetcode_problem_info } from "./leetcode";
-    import { file_exists as github_file_exists } from './github';
+    import { file_exists as github_file_exists, make_commit as make_github_commit } from './github';
+    import { get_options } from './storage';
 
 	let is_leetcode = false;
 
@@ -25,13 +26,47 @@
 
 	try_scrape()
 
-	let owner = "owner"; // TODO
-	let repo = "repo"; // TODO
-	let file_name = "test_file.txt";
+	let owner, repo, branch, file_name_pat, commit_pat;
+	let file_name, file_url, commit_message;
+
+	get_options().then(x => {
+		({ owner, repo, branch, file_name_pat, commit_pat } = x);
+		file_name = "test_file0.txt";
+		file_url = `https://github.com/${owner}/${repo}/blob/${branch}/${file_name}`;
+		commit_message = "commit message";
+	});
 
 	let file_exists = writable(false);
 
-	$: github_file_exists(file_name).then(x => file_exists.set(x))
+	let misc_err = writable(undefined);
+
+	async function update_file_existence(name: string): Promise<void> {
+		try {
+			await github_file_exists(name).then(x => file_exists.set(x));
+		} catch(err) {
+			misc_err.set(err.message);
+		}
+	}
+
+	$: update_file_existence(file_name);
+
+	let title, lang, code;
+	get_leetcode_problem_info().then(x => ({ title, lang, code } = x));
+
+	let commit_url = writable(undefined);
+
+	async function make_commit() {
+		let code_ = code;
+		if(!code_.endsWith("\n")) code_ += "\n";
+
+		try {
+			let commit_hash = await make_github_commit(file_name, code_, commit_message);
+			await update_file_existence(file_name);
+			commit_url.set(`https://github.com/${owner}/${repo}/commit/${commit_hash}`);
+		} catch(err) {
+			misc_err.set(err.message);
+		}
+	}
 </script>
 
 <main>
@@ -46,14 +81,28 @@
 			<h3 class="red">Error scraping problem info:</h3>
 			<p>{scraping_err}</p>
 		{/if}
+	{:else if $misc_err}
+		<h3 class="red">Error:</h3>
+		<p class=red>{$misc_err}</p>
+	{:else if $commit_url}
+		<h3>Commit Successful</h3>
+		<a href={$commit_url} target="_blank">{$commit_url}</a>
 	{:else}
-		<h3>Leetcode.</h3>
-		<label for="file-name">File Name</label>
-		<input type="text" id="file-name" name="file-name" bind:value={file_name} />
+		<div>
+			<label for="file-name">File Name</label>
+			<input type="text" id="file-name" name="file-name" bind:value={file_name} />
+		</div>
+
+		<div>
+			<label for="file-name">Message</label>
+			<input type="text" id="commit-message" name="commit-message" bind:value={commit_message} />
+		</div>
 
 		<p>{JSON.stringify(problem_info)}</p>
+
+		<button on:click={make_commit}>Commit</button>
 		{#if $file_exists}
-			<p class="red">The file {file_name} already exists in {owner}/{repo}</p>
+			<p class="red">The file <a href={file_url} target="_blank">{file_name}</a> already exists.</p>
 		{/if}
 	{/if}
 
@@ -63,8 +112,13 @@
 	main {
 		text-align: center;
 		padding: 0.1em;
-		max-width: 540px;
+		min-width: 150px;
+		max-width: 350px;
 	}
+
+	div {
+        display: block;
+    }
 
 	h1 {
 		font-size: 2em;
