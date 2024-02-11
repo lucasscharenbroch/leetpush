@@ -47,7 +47,7 @@ async function _get_code(): Promise<string> {
     return (document.querySelector(sel) as CodeMirrorDiv).CodeMirror.getValue();
 }
 
-export async function get_leetcode_problem_data(): Promise<{title: string,
+export async function get_leetcode_problem_info(): Promise<{title: string,
                                                             lang: string,
                                                             code: string}> {
 

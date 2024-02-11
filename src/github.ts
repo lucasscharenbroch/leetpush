@@ -22,7 +22,7 @@ export async function file_exists(file_name: string): Promise<boolean> {
   };
 
   try {
-    let res = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', { ...boilerplate, path: file_name });
+    await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', { ...boilerplate, path: file_name });
   } catch(err) {
     if(err.status == 404) {
       return false;
