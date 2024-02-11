@@ -1,4 +1,4 @@
-import { optNames } from './option-names';
+import { opt_names } from './option-names';
 
 export async function get_options(): Promise<{access_token: any,
                                               owner: any,
@@ -6,7 +6,7 @@ export async function get_options(): Promise<{access_token: any,
                                               branch: any,
                                               file_name_pat: any,
                                               commit_pat: any}> {
-    let opts = await chrome.storage.sync.get(optNames);
+    let opts = await chrome.storage.sync.get(opt_names);
 
     if(!(opts.access_token && opts.owner && opts.repo && opts.branch && opts.file_name_pat && opts.commit_pat))
         throw Error("Incomplete options: " + JSON.stringify(opts));

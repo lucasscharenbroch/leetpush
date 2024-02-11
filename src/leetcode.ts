@@ -62,7 +62,7 @@ export async function get_leetcode_problem_data(): Promise<{title: string,
     }
 
     if(!title || !lang || !code) {
-        throw Error("Incomplete leetcode information : ", res);
+        throw Error("Incomplete leetcode information : " + JSON.stringify(res));
     }
 
     return res;
