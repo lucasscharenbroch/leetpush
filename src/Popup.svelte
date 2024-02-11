@@ -33,7 +33,6 @@
 
 	get_options().then(x => {
 		({ owner, repo, branch, file_name_pat, commit_pat } = x);
-		file_url = `https://github.com/${owner}/${repo}/blob/${branch}/${file_name}`;
 	}).then(() =>
 		get_leetcode_problem_info().then(x => {
 			let full_title = x.title;
@@ -58,6 +57,7 @@
 			let spec_pat = /{([^}]*)}/g;
 
 			file_name = file_name_pat.replace(spec_pat, spec_lookup);
+			file_url = `https://github.com/${owner}/${repo}/blob/${branch}/${file_name}`;
 
 			specs = { ...specs, file_name };
 
@@ -80,8 +80,10 @@
 	$: update_file_existence(file_name);
 
 	let commit_url = writable(undefined);
+	let loading = writable(false);
 
 	async function make_commit() {
+		loading.set(true);
 		let code_ = code;
 		if(!code_.endsWith("\n")) code_ += "\n";
 
@@ -92,6 +94,8 @@
 		} catch(err) {
 			misc_err.set(err.message);
 		}
+
+		loading.set(false);
 	}
 </script>
 
@@ -129,6 +133,10 @@
 		<button on:click={make_commit}>Commit</button>
 		{#if $file_exists}
 			<p class="red">The file <a href={file_url} target="_blank">{file_name}</a> already exists.</p>
+		{/if}
+
+		{#if $loading}
+			<p>Loading...</p>
 		{/if}
 	{/if}
 
