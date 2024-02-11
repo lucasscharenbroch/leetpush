@@ -19,7 +19,6 @@
 				problem_info = x;
 			});
 		} catch(err) {
-			console.log("scraping err");
 			scraping_err = err;
 		}
 	}
@@ -51,7 +50,11 @@
 	$: update_file_existence(file_name);
 
 	let title, lang, code;
-	get_leetcode_problem_info().then(x => ({ title, lang, code } = x));
+	let nlines;
+	get_leetcode_problem_info().then(x => {
+		({ title, lang, code } = x);
+		nlines = code.split("\n").length;
+	});
 
 	let commit_url = writable(undefined);
 
@@ -94,11 +97,11 @@
 		</div>
 
 		<div>
-			<label for="file-name">Message</label>
+			<label for="file-name">Commit Message</label>
 			<input type="text" id="commit-message" name="commit-message" bind:value={commit_message} />
 		</div>
 
-		<p>{JSON.stringify(problem_info)}</p>
+		<p><b>{nlines}</b> lines to commit.</p>
 
 		<button on:click={make_commit}>Commit</button>
 		{#if $file_exists}
@@ -122,6 +125,10 @@
 
 	h1 {
 		font-size: 2em;
+	}
+
+	p, a {
+		word-wrap: break-word;
 	}
 
 	@media (min-width: 640px) {
