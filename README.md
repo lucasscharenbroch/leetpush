@@ -17,8 +17,8 @@ A Chrome Extension for committing to Github directly from Leetcode.
   - Repository Owner (Github Username)
   - Repository Name
   - Branch
-  - File Name Pattern (e.g. "{number_padded}_{Title_}.{ext}")
-  - Commit Message Pattern (e.g. "Create {file_name}")
+  - File Name Pattern (e.g. "{number\_padded}\_{Title\_}.{ext}")
+  - Commit Message Pattern (e.g. "Create {file\_name}")
 
 ## The New Leetcode Editor
 Leetpush currently only supports the old Leetcode editor, because that's the only one I use.
